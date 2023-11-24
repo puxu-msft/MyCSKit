@@ -1,0 +1,13 @@
+# ide
+.vs/
+.vscode/
+
+/local/
+
+# builds
+bin/
+obj/
+
+# dependencies and dir symlinks
+/packages/
+/packages

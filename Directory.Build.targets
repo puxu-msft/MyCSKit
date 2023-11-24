@@ -1,0 +1,7 @@
+<!-- Stop MSBuild to find another Directory.Build.targets in parent directories -->
+<!-- see: https://docs.microsoft.com/en-us/visualstudio/msbuild/customize-your-build?view=vs-2019 -->
+<Project>
+  <Import Project="$(MSBuildThisFileDirectory)\Directory.Build.cpp.targets" Condition="'$(MSBuildProjectExtension)' == '.vcxproj'" />
+  <Import Project="$(MSBuildThisFileDirectory)\Directory.Build.cs.targets" Condition="'$(MSBuildProjectExtension)' == '.csproj'" />
+  <!-- <Import Project="$(MSBuildThisFileDirectory)\..\Directory.Build.targets" Condition="Exists('$(MSBuildThisFileDirectory)\..\Directory.Build.targets')" /> -->
+</Project>

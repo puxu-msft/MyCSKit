@@ -1,0 +1,25 @@
+<!-- Stop MSBuild to find another Directory.Build.props in parent directories -->
+<!-- see: https://docs.microsoft.com/en-us/visualstudio/msbuild/customize-your-build?view=vs-2019 -->
+<Project>
+  <PropertyGroup>
+    <MyRootDir>$(MSBuildThisFileDirectory)</MyRootDir>
+    <PlatformToolset Condition="'$(PlatformToolset)'==''">v143</PlatformToolset>
+    <!-- 10.0.10240.0 - Win10 1507 -->
+    <!-- 10.0.10586.212 - Win10 1511 -->
+    <!-- 10.0.14393.795 - Win10 1607 -->
+    <!-- 10.0.15063.0 - Win10 1703 -->
+    <!-- 10.0.16299.15 - Win10 1709 -->
+    <!-- 10.0.17134.0 - Win10 1803 -->
+    <!-- 10.0.17763.0 - Win10 1809 -->
+    <!-- 10.0.18362.0 - Win10 1903 -->
+    <!-- 10.0.19041.685 - Win10 2004 -->
+    <!-- 10.0.20348.0 - Win10 21H1 -->
+    <!-- 10.0.22000.194 - Win11 2110 -->
+    <!-- 10.0.22621.755	- Win11 22H2 -->
+    <WindowsTargetPlatformVersion Condition="'$(WindowsTargetPlatformVersion)'==''">10.0</WindowsTargetPlatformVersion>
+    <MinimumPlatformVersion Condition="'$(MinimumPlatformVersion)'==''">10.0.19041.0</MinimumPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(MSBuildThisFileDirectory)\Directory.Build.cpp.props" Condition="'$(MSBuildProjectExtension)' == '.vcxproj'" />
+  <Import Project="$(MSBuildThisFileDirectory)\Directory.Build.cs.props" Condition="'$(MSBuildProjectExtension)' == '.csproj'" />
+  <!-- <Import Project="$(MSBuildThisFileDirectory)\..\Directory.Build.props" Condition="Exists('$(MSBuildThisFileDirectory)\..\Directory.Build.props')" /> -->
+</Project>
