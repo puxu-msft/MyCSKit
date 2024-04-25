@@ -1,3 +1,7 @@
+<#
+.LINK
+https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-command-line-reference?view=vs-2022
+#>
 param (
     [Parameter(Mandatory, Position=0)]
     [string]$Project,
@@ -40,12 +44,6 @@ $BuildProfile = @{
     MaxCpuCount = 4;
 }
 
-# -Prerelease if needed
-$vsInstance = Get-VSSetupInstance | Select-Object -First 1
-if ($null -eq $vsInstance) {
-    Write-Error -ErrorAction Stop 'Failed to Get-VSSetupInstance'
-}
-
 $env:DOTNET_CLI_UI_LANGUAGE = "en-US"
 
 Push-Location $ProjectDir
@@ -67,9 +65,10 @@ try {
     }
 
     & dotnet msbuild @exeArgs
+    if ($LASTEXITCODE -ne 0) {
+        throw "dotnet exited with code $LASTEXITCODE"
+    }
 }
 finally {
     Pop-Location
 }
-
-# https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-command-line-reference?view=vs-2022

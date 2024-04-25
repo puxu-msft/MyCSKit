@@ -24,18 +24,28 @@ namespace My
         {
             // use Convert.FromHexString if dotnet core >= 5
             // var b = Convert.FromHexString(hash);
-            return hex.SplitInParts(2).Select(e => Convert.ToByte(e, 16)).ToArray();
+            return hex.SplitInParts((s, i) => {
+                if (i + 1 >= s.Length) throw new ArgumentException("invalid number of hex chars");
+                int oi = i;
+                while ("-: ".Contains(s[i])) i++;
+                return (i - oi + 2, s.Substring(i, 2));
+            }).Select(e => Convert.ToByte(e, 16)).ToArray();
         }
 
-        public static IEnumerable<String> SplitInParts(this String s, Int32 partLength)
+        public static IEnumerable<String> SplitInParts(this string s, Func<string, int, (int, string)> fn)
         {
             if (s == null)
                 throw new ArgumentNullException(nameof(s));
-            if (partLength <= 0)
-                throw new ArgumentException("Part length has to be positive.", nameof(partLength));
 
-            for (var i = 0; i < s.Length; i += partLength)
-                yield return s.Substring(i, Math.Min(partLength, s.Length - i));
+            for (var i = 0; i < s.Length;)
+            {
+                var (move, part) = fn(s, i);
+                if (move <= 0)
+                    throw new InvalidOperationException("Returned move must be positive");
+
+                i += move;
+                yield return part;
+            }
         }
     }
 }

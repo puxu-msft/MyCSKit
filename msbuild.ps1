@@ -57,11 +57,11 @@ Push-Location $ProjectDir
 try {
     $exeArgs = @(
         $ProjectName,
-        "/t:$($BuildProfile.Target)",
-        "/p:Configuration=$($BuildProfile.Configuration)",
-        "/p:Platform=$($BuildProfile.Platform)",
-        "/MaxCpuCount:$($BuildProfile.MaxCpuCount)",
-        "/NoLogo"
+        "-t:$($BuildProfile.Target)",
+        "-p:Configuration=$($BuildProfile.Configuration)",
+        "-p:Platform=$($BuildProfile.Platform)",
+        "-MaxCpuCount:$($BuildProfile.MaxCpuCount)",
+        "-NoLogo"
     )
 
     if ($VV) {
@@ -78,6 +78,9 @@ try {
     else {
         # Hostx86
         & "$($vsInstance.InstallationPath)\MSBuild\Current\Bin\MSBuild.exe" @exeArgs
+    }
+    if ($LASTEXITCODE -ne 0) {
+        throw "msbuild exited with code $LASTEXITCODE"
     }
 }
 finally {

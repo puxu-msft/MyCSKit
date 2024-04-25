@@ -1,6 +1,10 @@
 <Project>
   <PropertyGroup>
-    <LangVersion>latest</LangVersion>
-    <TargetFramework>net6.0</TargetFramework>
+    <LangVersion Condition="'$(LangVersion)' == ''">latest</LangVersion>
+    <TargetFrameworks Condition="'$(TargetFrameworks)' == '' And '$(TargetFramework)' == ''">net6.0</TargetFrameworks>
+    <TargetFrameworks Condition="'$(TargetFrameworks)' == '' And '$(TargetFramework)' != ''">$(TargetFramework)</TargetFrameworks>
+    <Platforms Condition="'$(Platforms)' == '' And '$(Platform)' == ''">AnyCPU;x64</Platforms>
+    <Platforms Condition="'$(Platforms)' == '' And '$(Platform)' != ''">$(Platform)</Platforms>
+    <RuntimeIdentifiers Condition="'$(RuntimeIdentifiers)' == ''">win10;win-x64</RuntimeIdentifiers>
   </PropertyGroup>
 </Project>

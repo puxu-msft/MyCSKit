@@ -34,5 +34,18 @@ namespace My
             }
             return default;
         }
+
+        public static void PrintExceptions(string message, Exception ex)
+        {
+            if (message != null && message.Length > 0) {
+                Console.Error.WriteLine($"{message}");
+            }
+
+            while (ex != null)
+            {
+                Console.Error.WriteLine($"{ex.Message}\n{ex.StackTrace}");
+                ex = ex.InnerException;
+            }
+        }
     }
 }
