@@ -54,6 +54,29 @@ namespace My
             return leaf.AsArray;
         }
 
+        public IEnumerable<TR> Iterate<TR>(string path, Func<TomlNode, TR> fn)
+            where TR : TomlNode
+        {
+            var opaque = Root.WalkNode(path, throwIfNotFound: false);
+            if (opaque == null) {
+                yield break;
+            }
+            if (opaque.IsArray) {
+                foreach (var node in opaque.AsArray.RawArray) {
+                    yield return fn(node);
+                }
+            }
+            else {
+                yield return fn(opaque);
+            }
+        }
+
+        public void Iterate(string path, Action<TomlNode> fn) {
+            foreach (var node in Iterate(path, (e) => e)) {
+                fn(node);
+            }
+        }
+
         public string GetString(string path, string? defaultValue = null) {
             var leaf = Root.WalkNode(path, throwIfNotFound: (defaultValue == null));
             if (leaf == null) {

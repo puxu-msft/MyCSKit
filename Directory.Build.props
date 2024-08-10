@@ -3,7 +3,9 @@
 <Project>
   <PropertyGroup>
     <MyRootDir>$(MSBuildThisFileDirectory)</MyRootDir>
-    <!-- PlatformToolset is for building -->
+  </PropertyGroup>
+  <!-- for building -->
+  <PropertyGroup>
     <!-- v100 - VS 2010 -->
     <!-- v110 - VS 2012 -->
     <!-- v120 - VS 2013 -->
@@ -11,8 +13,10 @@
     <!-- v141 - VS 2017, compatible with VS 2015 -->
     <!-- v142 - VS 2019, compatible with VS 2015 -->
     <!-- v143 - VS 2022, compatible with VS 2015 -->
-    <PlatformToolset Condition="'$(PlatformToolset)'==''">v143</PlatformToolset>
-    <!-- TargetPlatformVersion is for running -->
+    <PlatformToolset Condition="'$(PlatformToolset)' == ''">v143</PlatformToolset>
+  </PropertyGroup>
+  <!-- for running -->
+  <PropertyGroup>
     <!-- 10.0.10240.0 - Win10 1507 -->
     <!-- 10.0.10586.212 - Win10 1511 -->
     <!-- 10.0.14393.795 - Win10 1607 -->
@@ -25,8 +29,13 @@
     <!-- 10.0.20348.0 - Win10 21H1 -->
     <!-- 10.0.22000.194 - Win11 2110 -->
     <!-- 10.0.22621.755	- Win11 22H2 -->
-    <WindowsTargetPlatformVersion Condition="'$(WindowsTargetPlatformVersion)'==''">10.0</WindowsTargetPlatformVersion>
-    <MinimumPlatformVersion Condition="'$(MinimumPlatformVersion)'==''">10.0.19041.0</MinimumPlatformVersion>
+    <!-- 10.0.22631.755	- Win11 23H2 -->
+    <WindowsTargetPlatformVersion Condition="'$(WindowsTargetPlatformVersion)' == ''">10.0</WindowsTargetPlatformVersion>
+    <MinimumPlatformVersion Condition="'$(MinimumPlatformVersion)' == ''">10.0.22621.0</MinimumPlatformVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(BuildingInsideVisualStudio)' != 'true'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(BuildingInsideVisualStudio)' == 'true'">
   </PropertyGroup>
   <Import Project="$(MSBuildThisFileDirectory)\Directory.Build.cpp.props" Condition="'$(MSBuildProjectExtension)' == '.vcxproj' AND Exists('$(MSBuildThisFileDirectory)\Directory.Build.cpp.props')" />
   <Import Project="$(MSBuildThisFileDirectory)\Directory.Build.cs.props" Condition="'$(MSBuildProjectExtension)' == '.csproj' AND Exists('$(MSBuildThisFileDirectory)\Directory.Build.cs.props')" />

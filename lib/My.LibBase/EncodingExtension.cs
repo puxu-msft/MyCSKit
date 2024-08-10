@@ -8,6 +8,11 @@ namespace My
 {
     public static partial class Extension
     {
+        public static ArraySegment<byte> ToArraySegment(this byte[] bytes)
+        {
+            return new ArraySegment<byte>(bytes);
+        }
+
         public static string? ToHex(this ArraySegment<byte> bytes)
         {
             // if (bytes.Array == null) return null;

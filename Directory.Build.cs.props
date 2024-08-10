@@ -1,10 +1,34 @@
 <Project>
   <PropertyGroup>
     <LangVersion Condition="'$(LangVersion)' == ''">latest</LangVersion>
-    <TargetFrameworks Condition="'$(TargetFrameworks)' == '' And '$(TargetFramework)' == ''">net6.0</TargetFrameworks>
-    <TargetFrameworks Condition="'$(TargetFrameworks)' == '' And '$(TargetFramework)' != ''">$(TargetFramework)</TargetFrameworks>
-    <Platforms Condition="'$(Platforms)' == '' And '$(Platform)' == ''">AnyCPU;x64</Platforms>
-    <Platforms Condition="'$(Platforms)' == '' And '$(Platform)' != ''">$(Platform)</Platforms>
-    <RuntimeIdentifiers Condition="'$(RuntimeIdentifiers)' == ''">win10;win-x64</RuntimeIdentifiers>
+    <!--
+      TFM https://learn.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props#targetframeworks
+      TFM 选项 https://learn.microsoft.com/en-us/dotnet/standard/frameworks
+    -->
+    <TargetFrameworks Condition="'$(TargetFrameworks)' == ''">net6.0</TargetFrameworks>
+    <!--
+      Platform 是用户定义的值 https://stackoverflow.com/questions/4090967/difference-between-platform-and-platform-target-in-vs
+      在 VS 中通过 Solution Configuration Manager\Project\Platform 修改它
+    -->
+    <!-- <Platforms Condition="'$(Platforms)' == '' AND '$(OutputType)' == 'Exe'">x64</Platforms> -->
+    <!-- <Platforms Condition="'$(Platforms)' == '' AND '$(OutputType)' == 'Library'">AnyCPU;x64</Platforms> -->
+    <!--
+      https://learn.microsoft.com/en-us/visualstudio/msbuild/msbuild-target-framework-and-target-platform?view=vs-2022#target-platform
+      这直接映射到 C# compiler 选项 /platform https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/output#platformtarget
+      在 VS 中通过 Project Properties\Build\Platform Target 修改它 https://learn.microsoft.com/en-us/visualstudio/ide/how-to-configure-projects-to-target-platforms?view=vs-2022
+      注意：Project Properties 又称为 Project Designer
+    -->
+    <PlatformTarget Condition="'$(PlatformTarget)' == '' AND $(Platform) == 'AnyCPU'">AnyCPU</PlatformTarget>
+    <PlatformTarget Condition="'$(PlatformTarget)' == '' AND $(Platform) == 'x64'">x64</PlatformTarget>
+    <!--
+      RID https://learn.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props#runtimeidentifiers
+      RID 类别 https://learn.microsoft.com/en-us/dotnet/core/rid-catalog
+    -->
+    <RuntimeIdentifiers Condition="'$(RuntimeIdentifiers)' == '' AND $(Platform) == 'AnyCPU'">win</RuntimeIdentifiers>
+    <RuntimeIdentifiers Condition="'$(RuntimeIdentifiers)' == '' AND $(Platform) == 'x64'">win-x64</RuntimeIdentifiers>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(BuildingInsideVisualStudio)' != 'true'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(BuildingInsideVisualStudio)' == 'true'">
   </PropertyGroup>
 </Project>
