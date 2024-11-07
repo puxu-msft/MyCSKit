@@ -1,4 +1,6 @@
 <#
+.NOTES
+241107
 .LINK
 https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-command-line-reference?view=vs-2022
 #>
@@ -29,7 +31,7 @@ else {
     $ProjectName = [IO.Path]::GetFileName($Project)
 }
 
-if ([string]::IsNullOrEmpty($Target)) {
+if ('' -eq [string]$Target) {
     $Target = "Build"
 }
 $Targets = $Target.Split(',')
@@ -39,12 +41,16 @@ if ($Clean) {
 
 $BuildProfile = @{
     Target = [string]::Join(',', $Targets);
-    Configuration = ($ReleaseBuild ? "Release": "Debug");
-    Platform = ($x64 ? "x64" : "Any CPU");
+    Configuration = if ($ReleaseBuild) {"Release"} else {"Debug"};
+    Platform = if ($x64) {"x64"} else {"Any CPU"};
     MaxCpuCount = 4;
 }
 
+# see https://github.com/dotnet/msbuild/issues/1596
 $env:DOTNET_CLI_UI_LANGUAGE = "en-US"
+$env:PreferredUILang = "en-US"
+$env:VSLANG = "1033"
+# chcp 65001
 
 Push-Location $ProjectDir
 try {
@@ -53,7 +59,7 @@ try {
         "-t:$($BuildProfile.Target)",
         "-p:Configuration=$($BuildProfile.Configuration)",
         "-p:Platform=$($BuildProfile.Platform)",
-        "/MaxCpuCount:$($BuildProfile.MaxCpuCount)",
+        "-MaxCpuCount:$($BuildProfile.MaxCpuCount)",
         "-NoLogo"
     )
 

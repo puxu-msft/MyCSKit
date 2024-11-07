@@ -1,10 +1,16 @@
-# For .NET projects, see a modern way (but there're some different) from https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-msbuild
+<#
+.NOTES
+241108
+For .NET projects, see a modern way (but there're some different) from https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-msbuild
+#>
 param (
     [Parameter(Mandatory, Position=0)]
     [string]$Project,
 
     [string]$Target,
     [switch]$ReleaseBuild,
+
+    [switch]$x64,
 
     [switch]$Clean,
     [switch]$V,
@@ -24,7 +30,7 @@ else {
     $ProjectName = [IO.Path]::GetFileName($Project)
 }
 
-if ([string]::IsNullOrEmpty($Target)) {
+if ('' -eq [string]$Target) {
     $Target = "Build"
 }
 $Targets = $Target.Split(',')
@@ -34,9 +40,8 @@ if ($Clean) {
 
 $BuildProfile = @{
     Target = [string]::Join(',', $Targets);
-    Configuration = ($ReleaseBuild ? "Release": "Debug");
-    # Platform = "AnyCPU";
-    Platform = "x64";
+    Configuration = if ($ReleaseBuild) {"Release"} else {"Debug"};
+    Platform = if ($x64) {"x64"} else {"Any CPU"};
     MaxCpuCount = 4;
 }
 
@@ -47,7 +52,7 @@ if ($null -eq $vsInstance) {
 }
 
 # not work by now
-# see: https://github.com/dotnet/msbuild/issues/1596
+# see https://github.com/dotnet/msbuild/issues/1596
 $env:DOTNET_CLI_UI_LANGUAGE = "en-US"
 $env:PreferredUILang = "en-US"
 $env:VSLANG = "1033"
@@ -75,9 +80,12 @@ try {
         # Hostx64
         & "$($vsInstance.InstallationPath)\MSBuild\Current\Bin\amd64\MSBuild.exe" @exeArgs
     }
-    else {
+    elseif ($env:PROCESSOR_ARCHITECTURE -ieq 'x86') {
         # Hostx86
         & "$($vsInstance.InstallationPath)\MSBuild\Current\Bin\MSBuild.exe" @exeArgs
+    }
+    else {
+        throw "Unsupported CPU arch: $($env:PROCESSOR_ARCHITECTURE)"
     }
     if ($LASTEXITCODE -ne 0) {
         throw "msbuild exited with code $LASTEXITCODE"
