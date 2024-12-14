@@ -1,0 +1,9 @@
+<Project>
+
+  <ItemGroup>
+    <ProjectReference Include="$(MSBuildThisFileDirectory)\My.LibBase.csproj">
+      <!-- <ReferenceOutputAssembly>true</ReferenceOutputAssembly> -->
+    </ProjectReference>
+  </ItemGroup>
+
+</Project>

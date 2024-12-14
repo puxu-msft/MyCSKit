@@ -3,9 +3,7 @@
 <Project>
   <PropertyGroup>
     <MyRootDir>$(MSBuildThisFileDirectory)</MyRootDir>
-  </PropertyGroup>
-  <!-- for building -->
-  <PropertyGroup>
+    <!-- PlatformToolset is for building -->
     <!-- v100 - VS 2010 -->
     <!-- v110 - VS 2012 -->
     <!-- v120 - VS 2013 -->
@@ -14,24 +12,26 @@
     <!-- v142 - VS 2019, compatible with VS 2015 -->
     <!-- v143 - VS 2022, compatible with VS 2015 -->
     <PlatformToolset Condition="'$(PlatformToolset)' == ''">v143</PlatformToolset>
-  </PropertyGroup>
-  <!-- for running -->
-  <PropertyGroup>
+    <!-- TargetPlatformVersion is for running -->
     <!-- 10.0.10240.0 - Win10 1507 -->
-    <!-- 10.0.10586.212 - Win10 1511 -->
-    <!-- 10.0.14393.795 - Win10 1607 -->
+    <!-- 10.0.10586.0 - Win10 1511 -->
+    <!-- 10.0.14393.0 - Win10 1607 -->
     <!-- 10.0.15063.0 - Win10 1703 -->
-    <!-- 10.0.16299.15 - Win10 1709 -->
+    <!-- 10.0.16299.0 - Win10 1709 -->
     <!-- 10.0.17134.0 - Win10 1803 -->
     <!-- 10.0.17763.0 - Win10 1809 -->
     <!-- 10.0.18362.0 - Win10 1903 -->
-    <!-- 10.0.19041.685 - Win10 2004 -->
+    <!-- 10.0.19041.0 - Win10 2004 -->
     <!-- 10.0.20348.0 - Win10 21H1 -->
-    <!-- 10.0.22000.194 - Win11 2110 -->
-    <!-- 10.0.22621.755	- Win11 22H2 -->
-    <!-- 10.0.22631.755	- Win11 23H2 -->
+    <!-- 10.0.22000.0 - Win11 2110 -->
+    <!-- 10.0.22621.0	- Win11 22H2 -->
+    <!-- 10.0.22631.0 - Win11 23H2 -->
+    <!-- 10.0.26100.0 - Win11 24H1 -->
     <WindowsTargetPlatformVersion Condition="'$(WindowsTargetPlatformVersion)' == ''">10.0</WindowsTargetPlatformVersion>
     <MinimumPlatformVersion Condition="'$(MinimumPlatformVersion)' == ''">10.0.22621.0</MinimumPlatformVersion>
+
+    <!-- true 以使用集中式输出路径 -->
+    <!-- <UseArtifactsOutput>true</UseArtifactsOutput> -->
   </PropertyGroup>
   <PropertyGroup Condition="'$(BuildingInsideVisualStudio)' != 'true'">
   </PropertyGroup>

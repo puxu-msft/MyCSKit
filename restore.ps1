@@ -17,17 +17,28 @@ param (
 )
 
 $ErrorActionPreference = 'Stop'
-trap { throw $Error[0]; }
+trap { throw $_ }
 
 $env:DOTNET_CLI_UI_LANGUAGE = "en-US"
 [CultureInfo]::DefaultThreadCurrentUICulture = [CultureInfo]::InvariantCulture
 
-$Project = Resolve-Path -LiteralPath $Project
+if ([string]::IsNullOrEmpty($Project)) {
+    $Project = "."
+}
+
 if (Test-Path -PathType Container $Project) {
     $ProjectDir = $Project
+
+    # $Project = Resolve-Path -ErrorAction Stop -Path (Join-Path $ProjectDir "*.*proj")
+    # if ($Project.Count -ne 1) {
+    #     throw "Multiple projects found: $Project"
+    # }
+    # $Project = $Project.Name
+    $Project = "."
 }
 else {
     $ProjectDir = [IO.Path]::GetDirectoryName($Project)
+    $Project = [IO.Path]::GetFileName($Project)
 }
 
 if ([string]::IsNullOrEmpty($NugetConfigFile)) {
@@ -60,7 +71,7 @@ try {
         )
 
         Write-Host "nuget restore $Project $exeArgs"
-        & nuget restore "." @exeArgs
+        & nuget restore $Project @exeArgs
         if ($LASTEXITCODE -ne 0) {
             Write-Error "nuget exited with $LASTEXITCODE"
         }
@@ -83,7 +94,7 @@ try {
         }
 
         Write-Host "dotnet restore $Project $exeArgs"
-        & dotnet restore "." @exeArgs
+        & dotnet restore $Project @exeArgs
         if ($LASTEXITCODE -ne 0) {
             Write-Error "dotnet exited with $LASTEXITCODE"
         }

@@ -67,7 +67,9 @@ namespace My
                 }
             }
             else {
-                yield return fn(opaque);
+                // if (opaque.IsTable) {
+                    yield return fn(opaque);
+                // }
             }
         }
 

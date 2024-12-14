@@ -1,2 +1,15 @@
 <Project>
+
+  <Target Name="DumpTargetSetting" BeforeTargets="CoreCompile" >
+    <!-- <Message Text="Current PlatformToolset=$(PlatformToolset)" /> -->
+    <Message Text="Current Configuration=$(Configuration)" />
+    <Message Text="Current Platform=$(Platform)" />
+    <!-- <Message Text="Current Platforms=$(Platforms)" /> -->
+    <Message Text="Current PlatformTarget=$(PlatformTarget)" />
+    <!-- <Message Text="Current TargetFrameworks=$(TargetFrameworks)" /> -->
+    <Message Text="Current TargetFramework=$(TargetFramework)" />
+    <Message Text="Current RuntimeIdentifiers=$(RuntimeIdentifiers)" />
+    <!-- <Message Text="Current RuntimeIdentifier=$(RuntimeIdentifier)" /> -->
+  </Target>
+
 </Project>

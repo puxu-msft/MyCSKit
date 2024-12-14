@@ -1,20 +1,30 @@
 <#
 .NOTES
-241108
+241201
+
+.NOTES
 For .NET projects, see a modern way (but there're some different) from https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-msbuild
 #>
+[CmdletBinding()]
 param (
     [Parameter(Mandatory, Position=0)]
     [string]$Project,
 
     [string]$Target,
-    [switch]$ReleaseBuild,
 
-    [switch]$x64,
-
+    [switch]$ReBuild,
     [switch]$Clean,
+
+    [switch]$ReleaseBuild,
+    [switch]$Retail,
+
+    [switch]$AnyCPU,
+
     [switch]$V,
-    [switch]$VV
+    [switch]$VV,
+
+    [Parameter(ValueFromRemainingArguments)]
+    $Remaining
 )
 
 $ErrorActionPreference = 'Stop'
@@ -30,42 +40,43 @@ else {
     $ProjectName = [IO.Path]::GetFileName($Project)
 }
 
-if ('' -eq [string]$Target) {
-    $Target = "Build"
-}
-$Targets = $Target.Split(',')
-if ($Clean) {
-    $Targets = @("Clean") + $Targets
-}
+function main {
+    # not work by now
+    # see https://github.com/dotnet/msbuild/issues/1596
+    $env:DOTNET_CLI_UI_LANGUAGE = "en-US"
+    $env:PreferredUILang = "en-US"
+    $env:VSLANG = "1033"
+    # chcp 65001
 
-$BuildProfile = @{
-    Target = [string]::Join(',', $Targets);
-    Configuration = if ($ReleaseBuild) {"Release"} else {"Debug"};
-    Platform = if ($x64) {"x64"} else {"Any CPU"};
-    MaxCpuCount = 4;
-}
+    $vsInstance = Get-VSSetupInstance -All | ? { $_.State -eq [Microsoft.VisualStudio.Setup.Configuration.InstanceState]::Complete } | Select-Object -First 1
+    if ($null -eq $vsInstance) {
+        throw "Failed to Get-VSSetupInstance"
+    }
 
-# -Prerelease if needed
-$vsInstance = Get-VSSetupInstance | Select-Object -First 1
-if ($null -eq $vsInstance) {
-    Write-Error -ErrorAction Stop 'Failed to Get-VSSetupInstance'
-}
+    if ('' -eq [string]$Target) {
+        $Target = "Build"
+    }
+    $Targets = $Target.Split(',')
+    if ($ReBuild) {
+        $Targets = @("Clean") + $Targets
+    }
+    elseif ($Clean) {
+        $Targets = @("Clean")
+    }
 
-# not work by now
-# see https://github.com/dotnet/msbuild/issues/1596
-$env:DOTNET_CLI_UI_LANGUAGE = "en-US"
-$env:PreferredUILang = "en-US"
-$env:VSLANG = "1033"
-# chcp 65001
+    if ($Retail) {
+        $ReleaseBuild = $true
+    }
 
-Push-Location $ProjectDir
-try {
+    $Targets = [string]::Join(',', $Targets)
+    $Configuration = if ($ReleaseBuild) {"Release"} else {"Debug"}
+    $Platform = if ($AnyCPU) {"Any CPU"} else {"x64"}
+
     $exeArgs = @(
         $ProjectName,
-        "-t:$($BuildProfile.Target)",
-        "-p:Configuration=$($BuildProfile.Configuration)",
-        "-p:Platform=$($BuildProfile.Platform)",
-        "-MaxCpuCount:$($BuildProfile.MaxCpuCount)",
+        "-t:$Targets",
+        "-p:Configuration=$Configuration",
+        "-p:Platform=$Platform",
         "-NoLogo"
     )
 
@@ -74,6 +85,9 @@ try {
     }
     elseif ($V) {
         $exeArgs += @("-verbosity:detailed")
+    }
+    else {
+        $exeArgs += @("-MaxCpuCount:4")
     }
 
     if ($env:PROCESSOR_ARCHITECTURE -ieq 'AMD64') {
@@ -87,9 +101,15 @@ try {
     else {
         throw "Unsupported CPU arch: $($env:PROCESSOR_ARCHITECTURE)"
     }
-    if ($LASTEXITCODE -ne 0) {
+    if (0 -ne $LASTEXITCODE) {
         throw "msbuild exited with code $LASTEXITCODE"
     }
+
+}
+
+Push-Location $ProjectDir
+try {
+    main
 }
 finally {
     Pop-Location
