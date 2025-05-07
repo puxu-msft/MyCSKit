@@ -2,14 +2,13 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFrameworks>net6.0</TargetFrameworks>
-    <Platforms>AnyCPU;x64</Platforms>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Tommy" Version="3.1.2" />
-    <PackageReference Include="Tommy.Extensions" Version="3.1.2" />
-    <PackageReference Include="Tommy.Extensions.Configuration" Version="6.2.0" />
+    <PackageReference Include="Tommy" />
+    <PackageReference Include="Tommy.Extensions" />
+    <PackageReference Include="Tommy.Extensions.Configuration" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,25 @@
+<Project>
+
+  <PropertyGroup>
+    <OutSubDirName Condition=" '$(OutSubDirName)' == '' And ('$(Platform)' == 'AnyCPU' Or '$(Platform)' == 'Win32') ">$(Configuration)</OutSubDirName>
+    <OutSubDirName Condition=" '$(OutSubDirName)' == '' ">$(Platform)_$(Configuration)</OutSubDirName>
+    <OutSubDirName Condition=" '$(OutSubDirNameAlt)' != '' ">$(OutSubDirName)$(OutSubDirNameAlt)</OutSubDirName>
+
+    <AppendTargetFrameworkToOutputPath Condition=" '$(AppendTargetFrameworkToOutputPath)' == '' ">false</AppendTargetFrameworkToOutputPath>
+    <!-- <OutSubDirName Condition=" '$(TargetFramework)' != '' ">$(OutSubDirName)\$(TargetFramework.ToLowerInvariant())</OutSubDirName> -->
+
+    <!-- 要有尾随斜杠 -->
+    <BaseOutputPath Condition=" '$(BaseOutputPath)' == '' ">bin\</BaseOutputPath>
+    <BaseIntermediateOutputPath Condition=" '$(BaseIntermediateOutputPath)' == '' ">obj\</BaseIntermediateOutputPath>
+    <OutputPath Condition=" '$(OutputPath)' == '' ">$(BaseOutputPath)$(OutSubDirName)\</OutputPath>
+    <IntermediateOutputPath Condition=" '$(IntermediateOutputPath)' == '' ">$(BaseIntermediateOutputPath)$(OutSubDirName)\</IntermediateOutputPath>
+
+    <O>$(IntermediateOutputPath)</O>
+    <IntDir>$(ProjectDir)$(IntermediateOutputPath)</IntDir>
+    <OutDir>$(ProjectDir)$(OutputPath)</OutDir>
+
+    <OutLibDir>$(MyRootDir)out\lib\$(OutSubDirName)</OutLibDir>
+    <DistribPath>$(MyRootDir)out\distrib\$(OutSubDirName)</DistribPath>
+  </PropertyGroup>
+
+</Project>

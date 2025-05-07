@@ -20,20 +20,20 @@ namespace My
                     }
                     else {
                         if (throwIfNotFound) {
-                            throw new Exception($"InvalidIndex: {piece} in {path}");
+                            throw new NotFoundException($"InvalidIndex: {piece} in {path}");
                         }
                     }
                 }
                 else {
                     if (throwIfNotFound) {
-                        throw new Exception($"IsLeaf: {piece} in {path}");
+                        throw new NotFoundException($"ReachLeaf: {piece} in {path}");
                     }
                     return default;
                 }
 
                 if (current == null) {
                     if (throwIfNotFound) {
-                        throw new Exception($"NotFound: {piece} in {path}");
+                        throw new NotFoundException($"NotFound: {piece} in {path}");
                     }
                     return default;
                 }
@@ -47,7 +47,7 @@ namespace My
             }
 
             if (throwIfNotFound) {
-                throw new Exception($"NoValue: {path}");
+                throw new NotFoundException($"NoValue: {path}");
             }
             return default;
         }

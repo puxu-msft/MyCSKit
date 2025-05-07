@@ -3,6 +3,14 @@
 <Project>
   <PropertyGroup>
     <MyRootDir>$(MSBuildThisFileDirectory)</MyRootDir>
+    <MyRootDir>$([MSBuild]::EnsureTrailingSlash($(MyRootDir)))</MyRootDir>
+
+    <!-- string.Substring 参数不能超长，只得分两个 -->
+    <ProjectDirRelativeToMyRootDir Condition=" '$(MSBuildProjectDirectory)' == '$(MyRootDir)' "></ProjectDirRelativeToMyRootDir>
+    <ProjectDirRelativeToMyRootDir Condition=" '$(MSBuildProjectDirectory)' != '$(MyRootDir)' ">$(MSBuildProjectDirectory.Substring($(MyRootDir.Length)))</ProjectDirRelativeToMyRootDir>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <!-- PlatformToolset is for building -->
     <!-- v100 - VS 2010 -->
     <!-- v110 - VS 2012 -->
@@ -11,7 +19,8 @@
     <!-- v141 - VS 2017, compatible with VS 2015 -->
     <!-- v142 - VS 2019, compatible with VS 2015 -->
     <!-- v143 - VS 2022, compatible with VS 2015 -->
-    <PlatformToolset Condition="'$(PlatformToolset)' == ''">v143</PlatformToolset>
+    <PlatformToolset Condition=" '$(PlatformToolset)' == '' ">v143</PlatformToolset>
+
     <!-- TargetPlatformVersion is for running -->
     <!-- 10.0.10240.0 - Win10 1507 -->
     <!-- 10.0.10586.0 - Win10 1511 -->
@@ -26,18 +35,42 @@
     <!-- 10.0.22000.0 - Win11 2110 -->
     <!-- 10.0.22621.0	- Win11 22H2 -->
     <!-- 10.0.22631.0 - Win11 23H2 -->
-    <!-- 10.0.26100.0 - Win11 24H1 -->
-    <WindowsTargetPlatformVersion Condition="'$(WindowsTargetPlatformVersion)' == ''">10.0</WindowsTargetPlatformVersion>
-    <MinimumPlatformVersion Condition="'$(MinimumPlatformVersion)' == ''">10.0.22621.0</MinimumPlatformVersion>
+    <!-- 10.0.26100.0 - Win11 24H2 -->
+    <WindowsTargetPlatformVersion Condition=" '$(WindowsTargetPlatformVersion)' == '' ">10.0</WindowsTargetPlatformVersion>
+    <MinimumPlatformVersion Condition=" '$(MinimumPlatformVersion)' == '' ">10.0.22621.0</MinimumPlatformVersion>
+  </PropertyGroup>
 
-    <!-- true 以使用集中式输出路径 -->
+  <!-- for nuget dependencies -->
+  <!-- See https://learn.microsoft.com/en-us/nuget/consume-packages/Central-Package-Management -->
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.SlnGen" />
+  </ItemGroup>
+
+  <!-- for packing -->
+  <PropertyGroup>
+    <!-- true 以启用集中式输出路径 -->
     <!-- <UseArtifactsOutput>true</UseArtifactsOutput> -->
   </PropertyGroup>
+
+  <!-- misc -->
+  <PropertyGroup>
+    <NoLogo Condition="'$(NoLogo)' == ''">true</NoLogo>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(BuildingInsideVisualStudio)' != 'true'">
   </PropertyGroup>
   <PropertyGroup Condition="'$(BuildingInsideVisualStudio)' == 'true'">
   </PropertyGroup>
-  <Import Project="$(MSBuildThisFileDirectory)\Directory.Build.cpp.props" Condition="'$(MSBuildProjectExtension)' == '.vcxproj' AND Exists('$(MSBuildThisFileDirectory)\Directory.Build.cpp.props')" />
-  <Import Project="$(MSBuildThisFileDirectory)\Directory.Build.cs.props" Condition="'$(MSBuildProjectExtension)' == '.csproj' AND Exists('$(MSBuildThisFileDirectory)\Directory.Build.cs.props')" />
-  <!-- <Import Project="$(MSBuildThisFileDirectory)\..\Directory.Build.props" Condition="Exists('$(MSBuildThisFileDirectory)\..\Directory.Build.props')" /> -->
+
+  <Import Project="$(MSBuildThisFileDirectory)Directory.Build.cpp.props" Condition=" '$(MSBuildProjectExtension)' == '.vcxproj' AND Exists('$(MSBuildThisFileDirectory)Directory.Build.cpp.props') " />
+  <Import Project="$(MSBuildThisFileDirectory)Directory.Build.cs.props" Condition=" '$(MSBuildProjectExtension)' == '.csproj' AND Exists('$(MSBuildThisFileDirectory)Directory.Build.cs.props') " />
+
+  <PropertyGroup Condition=" '$(UsingMicrosoftNETSdk)' == 'true' ">
+    <BeforeMicrosoftNETSdkTargets>$(BeforeMicrosoftNETSdkTargets);$(MSBuildThisFileDirectory)Directory.MicrosoftNETSdk.Before.targets</BeforeMicrosoftNETSdkTargets>
+  </PropertyGroup>
+
 </Project>

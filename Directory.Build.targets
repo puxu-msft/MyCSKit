@@ -1,7 +1,10 @@
-<!-- Stop MSBuild to find another Directory.Build.targets in parent directories -->
-<!-- see: https://docs.microsoft.com/en-us/visualstudio/msbuild/customize-your-build?view=vs-2019 -->
 <Project>
-  <Import Project="$(MSBuildThisFileDirectory)\Directory.Build.cpp.targets" Condition="'$(MSBuildProjectExtension)' == '.vcxproj' AND Exists('$(MSBuildThisFileDirectory)\Directory.Build.cpp.targets')" />
-  <Import Project="$(MSBuildThisFileDirectory)\Directory.Build.cs.targets" Condition="'$(MSBuildProjectExtension)' == '.csproj' AND Exists('$(MSBuildThisFileDirectory)\Directory.Build.cs.targets')" />
-  <!-- <Import Project="$(MSBuildThisFileDirectory)\..\Directory.Build.targets" Condition="Exists('$(MSBuildThisFileDirectory)\..\Directory.Build.targets')" /> -->
+
+  <ImportGroup Condition=" '$(UsingMicrosoftNETSdk)' != 'true' ">
+    <Import Project="$(MSBuildThisFileDirectory)Directory.MicrosoftNETSdk.Before.targets" />
+  </ImportGroup>
+
+  <Import Project="$(MSBuildThisFileDirectory)Directory.Build.cpp.targets" Condition=" '$(MSBuildProjectExtension)' == '.vcxproj' AND Exists('$(MSBuildThisFileDirectory)Directory.Build.cpp.targets') " />
+  <Import Project="$(MSBuildThisFileDirectory)Directory.Build.cs.targets" Condition=" '$(MSBuildProjectExtension)' == '.csproj' AND Exists('$(MSBuildThisFileDirectory)Directory.Build.cs.targets') " />
+
 </Project>

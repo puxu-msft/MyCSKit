@@ -1,7 +1,10 @@
 <Project>
+  <PropertyGroup>
+    <MyLibSimpleConfigExportsProps_Imported>true</MyLibSimpleConfigExportsProps_Imported>
+  </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="$(MSBuildThisFileDirectory)\My.LibSimpleConfig.csproj" />
+    <ProjectReference Include="$(MSBuildThisFileDirectory)My.LibSimpleConfig.csproj" />
   </ItemGroup>
 
 </Project>

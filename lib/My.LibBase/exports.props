@@ -1,7 +1,10 @@
 <Project>
+  <PropertyGroup>
+    <MyLibBaseExportsProps_Imported>true</MyLibBaseExportsProps_Imported>
+  </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="$(MSBuildThisFileDirectory)\My.LibBase.csproj">
+    <ProjectReference Include="$(MSBuildThisFileDirectory)My.LibBase.csproj">
       <!-- <ReferenceOutputAssembly>true</ReferenceOutputAssembly> -->
     </ProjectReference>
   </ItemGroup>

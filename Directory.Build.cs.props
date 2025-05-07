@@ -4,7 +4,7 @@
       TFM https://learn.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props#targetframeworks
       TFM 选项 https://learn.microsoft.com/en-us/dotnet/standard/frameworks
     -->
-    <TargetFrameworks Condition="'$(TargetFrameworks)' == ''">net6.0</TargetFrameworks>
+    <!-- <TargetFrameworks Condition="'$(TargetFrameworks)' == '' And '$(TargetFramework)' == ''">net8.0</TargetFrameworks> -->
 
     <!--
       该值决定了 VS IDE - Confuguration Manager 中的 Platform 可选项，从而影响在 VS 中进行构建时的 Platform 参数值
@@ -13,26 +13,16 @@
 
     <LangVersion Condition="'$(LangVersion)' == ''">latest</LangVersion>
 
-    <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)' == ''">obj\</BaseIntermediateOutputPath>
-    <IntermediateOutputPath Condition="'$(IntermediateOutputPath)' == '' And '$(Platform)' == ''">$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
-    <IntermediateOutputPath Condition="'$(IntermediateOutputPath)' == '' And '$(Platform)' != ''">$(BaseIntermediateOutputPath)$(Platform)_$(Configuration)\</IntermediateOutputPath>
-    <BaseOutputPath Condition="'$(BaseOutputPath)' == ''">bin\</BaseOutputPath>
-    <OutputPath Condition="'$(OutputPath)' == '' And '$(Platform)' == ''">$(BaseOutputPath)$(Configuration)\</OutputPath>
-    <OutputPath Condition="'$(OutputPath)' == '' And '$(Platform)' != ''">$(BaseOutputPath)$(Platform)_$(Configuration)\</OutputPath>
-
     <Nullable Condition="'$(Nullable)' == ''">enable</Nullable>
     <GenerateAssemblyInfo Condition="'$(GenerateAssemblyInfo)' == ''">false</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute Condition="'$(GenerateTargetFrameworkAttribute)' == ''">false</GenerateTargetFrameworkAttribute>
     <AssemblyClsCompliant Condition="'$(AssemblyClsCompliant)' == ''">false</AssemblyClsCompliant>
+  </PropertyGroup>
 
+  <PropertyGroup>
     <!-- 大型仓库不能启用文件自动包含模式，但我们不是，诶嘿 -->
     <!-- <EnableDefaultNoneItems>false</EnableDefaultNoneItems> -->
     <!-- <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences> -->
-
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(BuildingInsideVisualStudio)' != 'true'">
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(BuildingInsideVisualStudio)' == 'true'">
   </PropertyGroup>
 
 </Project>

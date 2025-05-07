@@ -1,0 +1,10 @@
+<Project>
+  <PropertyGroup>
+    <MyLibEncoderExExportsProps_Imported>true</MyLibEncoderExExportsProps_Imported>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="$(MSBuildThisFileDirectory)My.LibEncoderEx.csproj" />
+  </ItemGroup>
+
+</Project>

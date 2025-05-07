@@ -1,0 +1,6 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" Sdk="Microsoft.Build.Traversal">
+  <ItemGroup>
+    <ProjectFile Include="My.LibBase\My.LibBase.csproj" />
+    <ProjectFile Include="My.LibSimpleConfig\My.LibSimpleConfig.csproj" />
+  </ItemGroup>
+</Project>

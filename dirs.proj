@@ -1,0 +1,5 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" Sdk="Microsoft.Build.Traversal">
+  <ItemGroup>
+    <ProjectFile Include="lib\dirs.csproj" />
+  </ItemGroup>
+</Project>

@@ -19,8 +19,10 @@ namespace My
                 type == typeof(string) ||
                 type == typeof(decimal) ||
                 type == typeof(DateTime) ||
+#if (NET6_0_OR_GREATER)
                 type == typeof(DateOnly) ||
                 type == typeof(TimeOnly) ||
+#endif
                 type == typeof(DateTimeOffset) ||
                 type == typeof(TimeSpan) ||
                 type == typeof(Guid) ||
