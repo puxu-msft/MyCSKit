@@ -1,9 +1,5 @@
 <Project>
 
-  <ImportGroup Condition=" '$(UsingMicrosoftNETSdk)' != 'true' ">
-    <Import Project="$(MSBuildThisFileDirectory)Directory.MicrosoftNETSdk.Before.targets" />
-  </ImportGroup>
-
   <Import Project="$(MSBuildThisFileDirectory)Directory.Build.cpp.targets" Condition=" '$(MSBuildProjectExtension)' == '.vcxproj' AND Exists('$(MSBuildThisFileDirectory)Directory.Build.cpp.targets') " />
   <Import Project="$(MSBuildThisFileDirectory)Directory.Build.cs.targets" Condition=" '$(MSBuildProjectExtension)' == '.csproj' AND Exists('$(MSBuildThisFileDirectory)Directory.Build.cs.targets') " />
 

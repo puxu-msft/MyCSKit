@@ -1,15 +1,23 @@
 <#
-.NOTES
-241201
+.SYNOPSIS
+    Run MSBuild out of a Developer PowerShell
 
 .NOTES
-For .NET projects, see a modern way (but there're some different) from https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-msbuild
+    241201
+
+.NOTES
+    Install-Module -Scope CurrentUser VSSetup
+
+.NOTES
+    For .NET projects, see a modern way (but there're some different) from https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-msbuild
+
 #>
 [CmdletBinding()]
 param (
     [Parameter(Mandatory, Position=0)]
     [string]$Project,
 
+    [Alias('t')]
     [string]$Target,
 
     [switch]$ReBuild,
@@ -104,7 +112,6 @@ function main {
     if (0 -ne $LASTEXITCODE) {
         throw "msbuild exited with code $LASTEXITCODE"
     }
-
 }
 
 Push-Location $ProjectDir

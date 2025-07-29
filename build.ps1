@@ -1,9 +1,9 @@
 <#
 .NOTES
-241201
+    241201
 
 .LINK
-https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-command-line-reference?view=vs-2022
+    https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-command-line-reference?view=vs-2022
 #>
 [CmdletBinding()]
 param (
@@ -69,11 +69,11 @@ function main {
     $Platform = if ($AnyCPU) {"Any CPU"} else {"x64"}
 
     $exeArgs = @(
-        $ProjectName,
-        "-t:$Targets",
-        "-p:Configuration=$Configuration",
-        "-p:Platform=$Platform",
-        "-Restore:$Restore",
+        $ProjectName
+        "-t:$Targets"
+        "-p:Configuration=$Configuration"
+        "-p:Platform=$Platform"
+        "-Restore:$Restore"
         "-NoLogo"
     )
 
@@ -87,6 +87,7 @@ function main {
         $exeArgs += @("-MaxCpuCount:4")
     }
 
+    # "dotnet build" is for dotnet core only
     & dotnet msbuild @exeArgs
     if ($LASTEXITCODE -ne 0) {
         throw "dotnet msbuild exited with code $LASTEXITCODE"

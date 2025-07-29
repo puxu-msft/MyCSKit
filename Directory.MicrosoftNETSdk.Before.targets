@@ -15,8 +15,12 @@
     <IntermediateOutputPath Condition=" '$(IntermediateOutputPath)' == '' ">$(BaseIntermediateOutputPath)$(OutSubDirName)\</IntermediateOutputPath>
 
     <O>$(IntermediateOutputPath)</O>
+    <!-- $(ProjectDir) : 相对路径，自带尾斜杠 -->
+    <!-- $(MSBuildProjectDirectory) : 绝对路径，没有尾斜杠 -->
     <IntDir>$(ProjectDir)$(IntermediateOutputPath)</IntDir>
     <OutDir>$(ProjectDir)$(OutputPath)</OutDir>
+    <!-- <IntDir>$(MSBuildProjectDirectory)\$(IntermediateOutputPath)</IntDir> -->
+    <!-- <OutDir>$(MSBuildProjectDirectory)\$(OutputPath)</OutDir> -->
 
     <OutLibDir>$(MyRootDir)out\lib\$(OutSubDirName)</OutLibDir>
     <DistribPath>$(MyRootDir)out\distrib\$(OutSubDirName)</DistribPath>

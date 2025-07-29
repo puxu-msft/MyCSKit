@@ -1,5 +1,9 @@
 <Project>
 
+  <ImportGroup Condition=" '$(UsingMicrosoftNETSdk)' != 'true' ">
+    <Import Project="$(MSBuildThisFileDirectory)Directory.MicrosoftNETSdk.Before.targets" />
+  </ImportGroup>
+
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
     <PackageReference Include="System.Memory" />
     <PackageReference Include="System.Threading.Tasks.Extensions" />

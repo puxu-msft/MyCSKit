@@ -1,0 +1,147 @@
+<Project>
+  <PropertyGroup>
+    <VcpkgTriplet>x64-windows</VcpkgTriplet>
+    <VcpkgRoot>C:\opt\vcpkg</VcpkgRoot>
+  </PropertyGroup>
+  <Import Project="$(VcpkgRoot)\scripts\buildsystems\msbuild\vcpkg.props" Condition=" '$(VcpkgPropsImported)' != 'true' AND Exists('$(VcpkgRoot)\scripts\buildsystems\msbuild\vcpkg.props') " />
+
+  <PropertyGroup>
+    <!-- <VCToolsVersion /> -->
+    <VCProjectVersion Condition=" '$(VCProjectVersion)' == '' ">17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+
+    <SpectreMitigation Condition="'$(SpectreMitigation)' == ''">false</SpectreMitigation>
+    <!-- driver use this to override -->
+    <Driver_SpectreMitigation Condition="'$(Driver_SpectreMitigation)' == ''">false</Driver_SpectreMitigation>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Configuration">
+    <UseEnv Condition="'$(UseEnv)' == ''">false</UseEnv>
+    <NoLogo Condition="'$(NoLogo)' == ''">true</NoLogo>
+
+    <CharacterSet Condition=" '$(CharacterSet)' == '' ">MultiByte</CharacterSet>
+
+    <ProjectDirRelativeToMyRootDir Condition=" '$(MSBuildProjectDirectory)' == '$(MyRootDir)' "></ProjectDirRelativeToMyRootDir>
+    <ProjectDirRelativeToMyRootDir Condition=" '$(MSBuildProjectDirectory)' != '$(MyRootDir)' ">$(MSBuildProjectDirectory.Substring($(MyRootDir.Length)))</ProjectDirRelativeToMyRootDir>
+
+    <!-- <BaseIntermediateOutputPath>$(ObjectDirectory)\</BaseIntermediateOutputPath> -->
+    <!-- <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(BuildArchitecture)\</IntermediateOutputPath> -->
+    <!-- <O>$(IntermediateOutputPath)</O> -->
+
+    <IntDirRelPath>obj\$(Platform)_$(Configuration)</IntDirRelPath>
+    <IntDir>$(ProjectDir)$(IntDirRelPath)\</IntDir>
+
+    <OutDirRelPath>bin\$(Platform)_$(Configuration)</OutDirRelPath>
+    <OutDir>$(ProjectDir)$(OutDirRelPath)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' " Label="Configuration">
+    <!-- LINK /INCREMENTAL -->
+    <LinkIncremental>true</LinkIncremental>
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' " Label="Configuration">
+    <!-- LINK /INCREMENTAL -->
+    <LinkIncremental>false</LinkIncremental>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <!-- CL /GL + LINK /LTCG -->
+    <WholeProgramOptimization Condition=" '$(WholeProgramOptimization) == '' ">false</WholeProgramOptimization>
+  </PropertyGroup>
+
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <!-- <AdditionalIncludeDirectories>
+        %(ClCompile.AdditionalIncludeDirectories)
+      </AdditionalIncludeDirectories> -->
+      <AdditionalOptions>%(AdditionalOptions) /utf-8 /bigobj</AdditionalOptions>
+      <!-- CL /permissive- -->
+      <ConformanceMode Condition=" '$(ConformanceMode)' == '' ">true</ConformanceMode>
+      <!-- https://learn.microsoft.com/en-us/cpp/build/reference/zc-twophase?view=msvc-170 -->
+      <!-- <AdditionalOptions Condition=" '$(ConformanceMode)' == 'true' ">%(AdditionalOptions) /Zc:twoPhase-</AdditionalOptions> -->
+      <!-- CL /Zi -->
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <!--
+        C4200: nonstandard extension used: zero-sized array in struct/union
+        C4201: nonstandard extension used: nameless struct/union
+        C4312: 'type cast': conversion from 'A' to 'B' of greater size
+        C26445: Do not assign gsl::span or std::string_view to a reference. They are cheap to construct and are not owners of the underlying data. (gsl.view).
+          Even for MSVC v19.32 this is actually far from true. Copying (as opposed to referencing) larger than register-sized structures is fairly expensive. Example: https://godbolt.org/z/oPco88PaP
+        C26813: Use 'bitwise and' to check if a flag is set.
+          The MSVC v19.31 toolset has a bug where a pointer to an enum is incorrectly flagged with C26813.
+          It's supposed to be fixed with VS 17.2.1 and 17.3.0 and later respectively.
+      -->
+      <DisableSpecificWarnings>4200;4201;4312;5105;26445;26813;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <!-- CL /EHsc -->
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <LanguageStandard Condition=" '$(LanguageStandard)' == '' ">stdcpp23</LanguageStandard>
+      <LanguageStandard_C Condition=" '$(LanguageStandard_C)' == '' ">stdc17</LanguageStandard_C>
+      <!-- CL /MP - incompatible with /Yc Create Precompiled Header -->
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PreprocessorDefinitions>
+        CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1;
+        _CONSOLE;
+        _HAS_STD_BYTE=0;
+        _SIZE_T_DEFINED;
+        _USE_DECLSPECS_FOR_SAL=1;
+        _SILENCE_CXX17_RESULT_OF_DEPRECATION_WARNING;
+        _SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING;
+        _SILENCE_CXX17_ALLOCATOR_VOID_DEPRECATION_WARNING;
+        _SILENCE_CXX17_OLD_ALLOCATOR_MEMBERS_DEPRECATION_WARNING;
+        _ENFORCE_MATCHING_ALLOCATORS=0;
+        %(PreprocessorDefinitions)
+      </PreprocessorDefinitions>
+      <!-- CL /GR -->
+      <RuntimeTypeInfo Condition=" '$(RuntimeTypeInfo)' == '' ">false</RuntimeTypeInfo>
+      <!-- CL /sdl  -->
+      <!-- <SDLCheck>true</SDLCheck> -->
+      <!-- CL /GF eliminate duplicate strings -->
+      <StringPooling>true</StringPooling>
+      <!-- CL /nologo -->
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <!-- CL /Zc:preprocessor -->
+      <UseStandardPreprocessor Condition=" '$(UseStandardPreprocessor)' == '' ">true</UseStandardPreprocessor>
+    </ClCompile>
+    <Link>
+      <!-- LINK /SUBSYSTEM -->
+      <Subsystem>Console</Subsystem>
+      <!-- LINK /DEBUG -->
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+      <!-- <GenerateDebugInformation>true</GenerateDebugInformation> -->
+      <!-- <AdditionalDependencies>
+        %(AdditionalDependencies)
+      </AdditionalDependencies> -->
+      <!-- <AdditionalLibraryDirectories>
+        %(AdditionalLibraryDirectories)
+      </AdditionalLibraryDirectories> -->
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <ClCompile>
+      <!-- CL /w4 -->
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>
+        _DEBUG;
+        %(PreprocessorDefinitions)
+      </PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition=" '$(Configuration)' == 'Release' ">
+    <ClCompile>
+      <!-- CL /w3 -->
+      <WarningLevel>Level3</WarningLevel>
+      <!-- CL /Gy -->
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <!-- CL /Oi -->
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>
+        NDEBUG;
+        %(PreprocessorDefinitions)
+      </PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <!-- LINK /OPT ICF[= iterations] -->
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <!-- LINK /OPT REF -->
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+</Project>
