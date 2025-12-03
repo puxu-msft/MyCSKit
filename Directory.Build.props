@@ -5,9 +5,8 @@
     <MyRootDir>$(MSBuildThisFileDirectory)</MyRootDir>
     <MyRootDir>$([MSBuild]::EnsureTrailingSlash($(MyRootDir)))</MyRootDir>
 
-    <!-- string.Substring 参数不能超长，只得分两个 -->
-    <ProjectDirRelativeToMyRootDir Condition=" '$(MSBuildProjectDirectory)' == '$(MyRootDir)' "></ProjectDirRelativeToMyRootDir>
-    <ProjectDirRelativeToMyRootDir Condition=" '$(MSBuildProjectDirectory)' != '$(MyRootDir)' ">$(MSBuildProjectDirectory.Substring($(MyRootDir.Length)))</ProjectDirRelativeToMyRootDir>
+    <ProjectDirRelativeToMyRootDir>$([MSBuild]::MakeRelative($(MyRootDir), $(MSBuildProjectDirectory)))</ProjectDirRelativeToMyRootDir>
+    <ProjectDirRelativeToMyRootDir Condition=" '$(ProjectDirRelativeToMyRootDir)' == '.' "></ProjectDirRelativeToMyRootDir>
   </PropertyGroup>
 
   <PropertyGroup>

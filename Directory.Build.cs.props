@@ -11,6 +11,9 @@
     -->
     <Platforms Condition="'$(Platforms)' == ''">AnyCPU;x64</Platforms>
 
+    <!-- 设置默认 Platform 为 x64，避免 VS 默认选 AnyCPU 导致跳过构建 -->
+    <Platform Condition="'$(Platform)' == ''">x64</Platform>
+
     <LangVersion Condition="'$(LangVersion)' == ''">latest</LangVersion>
 
     <Nullable Condition="'$(Nullable)' == ''">enable</Nullable>

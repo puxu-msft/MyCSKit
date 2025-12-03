@@ -5,9 +5,10 @@
 /local/
 
 # builds
+AnyBuildLogs/
+*.binlog
 bin/
 obj/
 
 # dependencies and dir symlinks
-/packages/
 /packages
